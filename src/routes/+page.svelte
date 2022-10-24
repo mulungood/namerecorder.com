@@ -39,7 +39,7 @@
 					}
 					context.micRecorder.ondataavailable = (e) => {
 						const blob = new Blob([e.data], {
-							type: 'audio/ogg; codecs=opus',
+							type: 'audio/mp3',
 						})
 						context.micRecorder.ondatavailable = undefined
 
@@ -58,6 +58,10 @@
 <h2>{$state.value}</h2>
 
 {#if $state.matches('idle')}
+	<label>
+		Upload an audio file
+		<input type="file" accept="audio/*" />
+	</label>
 	<button on:click|preventDefault={() => send('REQUEST_ACCESS')} type="button"
 		><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -125,13 +129,3 @@
   10. Is .ogg the best format? What about mp3 et. al?
   11. Can we dispose of the MediaStream/Device after recording so the mic icon won't show up in the browser?
  -->
-
-<!-- 
-/**
-ISSUES I HAD WITH THE MEDIARECORDER API
-  * ondataavailable only shoots after .stop is called
-  * Hence I can't have it live in startRecording, as that will be cleaned up before stop is called.
-  * I could move stop to run before that, but it'd be even more confusing
-  * So I'll do is transform stopRecording into a service so I can do a promise that returns the blob from the ondatavailable thingy
-  */
-  -->
