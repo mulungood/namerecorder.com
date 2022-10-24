@@ -2,6 +2,7 @@
 	import { useMachine } from '@xstate/svelte'
 	import { assign } from 'xstate'
 	import { recorderMachine } from './recorder.machine'
+	import Timer from './Timer.svelte'
 
 	const { state, send } = useMachine(recorderMachine, {
 		actions: {
@@ -57,23 +58,21 @@
 
 <h2>{$state.value}</h2>
 
-{#if $state.context.micStream}
-	<h2>Audio</h2>
-	<audio srcObject={$state.context.micStream} />
-	<audio src="https://developer.mozilla.org/media/cc0-audio/t-rex-roar.mp3" />
-{/if}
-
-{#if $state.matches('recorded')}
-	{#if $state.context.recordingBlob}
-		<audio
-			src={URL.createObjectURL($state.context.recordingBlob)}
-			autoplay
-			controls
-		/>
-	{/if}
+{#if $state.matches('idle')}
+	<button on:click|preventDefault={() => send('REQUEST_ACCESS')} type="button"
+		><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				d="M16 4C14.6739 4 13.4021 4.52678 12.4645 5.46447C11.5268 6.40215 11 7.67392 11 9V16C11 17.3261 11.5268 18.5979 12.4645 19.5355C13.4021 20.4732 14.6739 21 16 21C17.3261 21 18.5979 20.4732 19.5355 19.5355C20.4732 18.5979 21 17.3261 21 16V9C21 7.67392 20.4732 6.40215 19.5355 5.46447C18.5979 4.52678 17.3261 4 16 4V4ZM8 15C8.26522 15 8.51957 15.1054 8.70711 15.2929C8.89464 15.4804 9 15.7348 9 16C9 17.8565 9.7375 19.637 11.0503 20.9497C12.363 22.2625 14.1435 23 16 23C17.8565 23 19.637 22.2625 20.9497 20.9497C22.2625 19.637 23 17.8565 23 16C23 15.7348 23.1054 15.4804 23.2929 15.2929C23.4804 15.1054 23.7348 15 24 15C24.2652 15 24.5196 15.1054 24.7071 15.2929C24.8946 15.4804 25 15.7348 25 16C25.0004 18.2141 24.1847 20.3507 22.7088 22.0011C21.2329 23.6515 19.2004 24.7 17 24.946V27C17 27.2652 16.8946 27.5196 16.7071 27.7071C16.5196 27.8946 16.2652 28 16 28C15.7348 28 15.4804 27.8946 15.2929 27.7071C15.1054 27.5196 15 27.2652 15 27V24.946C12.7996 24.7 10.7671 23.6515 9.29122 22.0011C7.81532 20.3507 6.99958 18.2141 7 16C7 15.7348 7.10536 15.4804 7.29289 15.2929C7.48043 15.1054 7.73478 15 8 15Z"
+				fill="currentColor"
+			/>
+		</svg>
+		Record</button
+	>
+	<p>You’ll be prompted by your browser to give access to your microphone</p>
 {/if}
 
 {#if $state.matches('recording')}
+	<Timer />
 	<button on:click|preventDefault={() => send('STOP_RECORDING')} type="button">
 		<svg viewBox="0 0 16 16">
 			<path
@@ -93,6 +92,15 @@
 		<span class="sr-only">Cancel</span>
 	</button>
 {/if}
+{#if $state.matches('recorded')}
+	{#if $state.context.recordingBlob}
+		<audio
+			src={URL.createObjectURL($state.context.recordingBlob)}
+			autoplay
+			controls
+		/>
+	{/if}
+{/if}
 
 <!-- Goal: record audio file based on microphone and have it ready for uploading -->
 <!-- WONTDO today: uploading itself, nice UI, API routing to existing recordings, auth - PURELY CLIENT_SIDE -->
@@ -106,9 +114,9 @@
   4. ✅ Recorded state with player for the audio file
   5. ❌ Dropzone for audio file - **gave up on file uploading - non-critical flow**
   6. ❌ Parse the audio file from dropzone and have it in the internal state of the machine
-  7. Add a timer in the recording state to stop recording - limit the size of recordings (15s?)
-  8. Prevent uploading audio files longer than 15s
+  7. ✅ Add a timer in the recording state to stop recording - limit the size of recordings (15s?)
+  8. ❌ Prevent uploading audio files longer than 15s
   9. Visualize audio: https://github.com/mdn/dom-examples/blob/e9ee0e48efb6158878dbfe70878d3663f52ab6f7/media/web-dictaphone/scripts/app.js#L116
-  10. Is .ogg the best format? What about mp3 et. al?
-  11. Can we dispose of the MediaStream/Device after recording so the mic icon won't show up in the browser?
+  10. ❌ Is .ogg the best format? What about mp3 et. al? - will settle on mp3 for now
+  11. ❌ Can we dispose of the MediaStream/Device after recording so the mic icon won't show up in the browser? - non-critical
  -->
