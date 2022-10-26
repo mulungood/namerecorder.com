@@ -67,7 +67,7 @@
 						return reject(storageRes.error)
 					}
 					const rowRes = await supabase.from('aliases').upsert({
-						id: user.email,
+						alias: user.email,
 						user_id: user.id,
 					})
 					console.log({ rowRes })
@@ -181,7 +181,7 @@
 	14. ✅ Send to Supabase storage
 	15. ✅ Add row to Supabase's aliases table
 		- perhaps through a webhook / listener inside Supabase for reliability?
-	16. API endpoint for resolving pronunciation mp3 for given ID
+	16. ✅ API endpoint for resolving pronunciation mp3 for given ID
 	17. Way to attach written name to pronunciation
 	18. Front-end route with name displayed & audio player for pronunciation
 
