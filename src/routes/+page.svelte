@@ -182,11 +182,15 @@
 	15. ✅ Add row to Supabase's aliases table
 		- perhaps through a webhook / listener inside Supabase for reliability?
 	16. ✅ API endpoint for resolving pronunciation mp3 for given ID
-	17. Way to attach written name to pronunciation
-	18. Front-end route with name displayed & audio player for pronunciation
+	17. ✅ Front-end route with alias displayed & audio player for pronunciation
+	18. Attach written name to pronunciation
+	19. Styling
 
 	BONUS:
 	- Allow multiple aliases per user
 	- Ensure bucket's RLS security is top-notch
 		- Didn't work: ((bucket_id = 'names'::text) AND (role() = 'authenticated'::text) AND (name = (uid())::text))
+	- Read token for server db client that can read from `aliases` without opening it up to the public
+		- Then delete open policy in db
+		- Perhaps do a secret instead of a token?
  -->

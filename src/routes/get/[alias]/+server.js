@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/public'
-import { supabase } from '../../../db'
+import { getObjectUrl } from '../../../getObjectUrl'
+import { getUserIdFromAlias } from '../../../getUserIdFromAlias'
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ params }) {
@@ -7,23 +7,15 @@ export async function GET({ params }) {
 	if (!alias) {
 		return new Response(null, { status: 401 })
 	}
+	const { error, user_id } = await getUserIdFromAlias(alias)
 
-	const { data, error } = await supabase
-		.from('aliases')
-		.select('user_id')
-		.eq('alias', alias)
-
-	const user_id = data?.[0]?.user_id
-
-	console.info({ data, error, alias, user_id })
+	console.info({ error, alias, user_id })
 
 	if (error || !user_id) {
 		return new Response(null, { status: 404 })
 	}
 
-	return rewriteRequest(
-		`${env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/pronunciations/${user_id}/pronounciation.mp3`,
-	)
+	return rewriteRequest(getObjectUrl(user_id))
 }
 
 async function rewriteRequest(targetUrl) {
