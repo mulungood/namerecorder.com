@@ -57,16 +57,27 @@
 				new Promise(async (resolve, reject) => {
 					const file = new File(
 						[context.recordingBlob],
-						`user--${user.id}/name-${new Date().toISOString()}.mp3`,
+						`${user.id}/pronounciation.mp3`,
 					)
-					const { data, error } = await supabase.storage
-						.from('names')
-						.upload(file.name, file)
-					console.info({ data, error })
-					if (error) {
-						return reject(error)
+					const storageRes = await supabase.storage
+						.from('pronunciations')
+						.upload(file.name, file, { upsert: true })
+					console.log({ storageRes })
+					if (storageRes.error) {
+						return reject(storageRes.error)
 					}
-					resolve(data)
+					const rowRes = await supabase.from('aliases').upsert({
+						id: user.email,
+						user_id: user.id,
+					})
+					console.log({ rowRes })
+					if (rowRes.error) {
+						return reject(rowRes.error)
+					}
+					resolve({
+						storage: storageRes.data,
+						row: rowRes.data,
+					})
 				}),
 		},
 		guards: {
@@ -165,4 +176,17 @@
   9. Visualize audio: https://github.com/mdn/dom-examples/blob/e9ee0e48efb6158878dbfe70878d3663f52ab6f7/media/web-dictaphone/scripts/app.js#L116
   10. ❌ Is .ogg the best format? What about mp3 et. al? - will settle on mp3 for now
   11. ❌ Can we dispose of the MediaStream/Device after recording so the mic icon won't show up in the browser? - non-critical
+	12. ❌ Send to Cloudflare R2 storage - gave up, too clunky
+	13. ✅ Auth with Supabase
+	14. ✅ Send to Supabase storage
+	15. ✅ Add row to Supabase's aliases table
+		- perhaps through a webhook / listener inside Supabase for reliability?
+	16. API endpoint for resolving pronunciation mp3 for given ID
+	17. Way to attach written name to pronunciation
+	18. Front-end route with name displayed & audio player for pronunciation
+
+	BONUS:
+	- Allow multiple aliases per user
+	- Ensure bucket's RLS security is top-notch
+		- Didn't work: ((bucket_id = 'names'::text) AND (role() = 'authenticated'::text) AND (name = (uid())::text))
  -->
