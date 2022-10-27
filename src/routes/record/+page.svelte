@@ -1,17 +1,17 @@
 <script>
 	import { goto } from '$app/navigation'
 	import { useMachine } from '@xstate/svelte'
-	import { onMount } from 'svelte'
 	import { assign } from 'xstate'
 	import LoadingScreen from '../../components/LoadingScreen.svelte'
 	import NameForm from '../../components/NameForm.svelte'
 	import RecordedScreen from '../../components/RecordedScreen.svelte'
 	import RecordingScreen from '../../components/RecordingScreen.svelte'
 	import { supabase } from '../../db'
+	import { userStore } from '../../userStore'
 	import Auth from '../Auth.svelte'
 	import { recorderMachine } from '../recorder.machine'
 
-	let user
+	$: user = $userStore.user
 
 	const { state, send } = useMachine(recorderMachine, {
 		actions: {
@@ -126,23 +126,6 @@
 		},
 	})
 
-	onMount(() => {
-		supabase.auth.getSession().then(({ data: { session } }) => {
-			user = session?.user ?? null
-		})
-
-		const { subscription: authListener } = supabase.auth.onAuthStateChange(
-			(event, session) => {
-				const currentUser = session?.user
-				user = currentUser ?? null
-			},
-		)
-
-		return () => {
-			authListener?.unsubscribe()
-		}
-	})
-
 	$: console.log({ ctx: $state.context, user })
 
 	$: if ($state.matches('done')) {
@@ -150,7 +133,9 @@
 	}
 </script>
 
-{#if !user}
+{#if $userStore.state === 'loading'}
+	<LoadingScreen />
+{:else if !user}
 	<Auth />
 {:else}
 	<!-- <pre>{JSON.stringify(
