@@ -40,21 +40,21 @@
 		services: {
 			verifyHandle: (context) =>
 				new Promise(async (resolve, reject) => {
-					console.log({ verify: context })
 					if (!context.handle) return reject('invalid-handle')
 
 					try {
 						const availability = await (
 							await fetch(`/handle-availability/@${context.handle}`)
 						).json()
-						console.log({ availability })
-						if (availability.available === true) {
+						if (
+							availability.available === true ||
+							availability.used_by === user.id
+						) {
 							resolve(true)
 						} else {
 							reject('unavailable')
 						}
 					} catch (error) {
-						console.log({ error })
 						reject(error)
 					}
 				}),
@@ -97,7 +97,6 @@
 					const storageRes = await supabase.storage
 						.from('pronunciations')
 						.upload(file.name, file, { upsert: true })
-					console.log({ storageRes })
 					if (storageRes.error) {
 						return reject(storageRes.error)
 					}
@@ -106,7 +105,6 @@
 						handle: context.handle,
 						name: context.name,
 					})
-					console.log({ rowRes })
 					if (rowRes.error) {
 						return reject(rowRes.error)
 					}

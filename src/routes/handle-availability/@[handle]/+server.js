@@ -12,8 +12,11 @@ export async function GET({ params }) {
 		return new Response(null, { status: 500 })
 	}
 
-	return new Response(JSON.stringify({ available: !user }), {
-		status: 200,
-		headers: { 'Content-Type': 'application/json' },
-	})
+	return new Response(
+		JSON.stringify({ available: !user, used_by: user?.user_id }),
+		{
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		},
+	)
 }
