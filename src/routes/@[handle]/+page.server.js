@@ -1,21 +1,21 @@
 import { error as errorResponse } from '@sveltejs/kit'
 import { getRandomArrItem } from '../../arrays'
-import { getUserIdFromAlias } from '../../getUserIdFromAlias'
+import { getUserIdFromHandle } from '../../getUserFromHandle'
 
 export async function load({ params }) {
-	const { alias } = params
-	if (!alias) {
-		throw errorResponse(401, { message: 'invalid-alias' })
+	const { handle } = params
+	if (!handle) {
+		throw errorResponse(401, { message: 'invalid-handle' })
 	}
 
-	const { error, user_id } = await getUserIdFromAlias(`@${alias}`)
-	if (error || !user_id) {
+	const { error, user } = await getUserIdFromHandle(handle)
+	if (error || !user?.user_id) {
 		throw errorResponse(404, { message: 'user-not-found' })
 	}
 
 	return {
-		user_id,
-		alias,
+		user,
+		handle,
 		pageColor: getRandomArrItem(['emerald', 'red', 'violet', 'orange']),
 	}
 }

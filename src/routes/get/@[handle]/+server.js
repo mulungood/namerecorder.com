@@ -1,21 +1,21 @@
 import { getObjectUrl } from '../../../getObjectUrl'
-import { getUserIdFromAlias } from '../../../getUserIdFromAlias'
+import { getUserIdFromHandle } from '../../../getUserFromHandle'
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ params }) {
-	const { alias } = params
-	if (!alias) {
+	const { handle } = params
+	if (!handle) {
 		return new Response(null, { status: 401 })
 	}
-	const { error, user_id } = await getUserIdFromAlias(alias)
+	const { error, user } = await getUserIdFromHandle(handle)
 
-	console.info({ error, alias, user_id })
+	console.info({ error, handle, user })
 
-	if (error || !user_id) {
+	if (error || !user?.user_id) {
 		return new Response(null, { status: 404 })
 	}
 
-	return rewriteRequest(getObjectUrl(user_id))
+	return rewriteRequest(getObjectUrl(user?.user_id))
 }
 
 async function rewriteRequest(targetUrl) {

@@ -11,11 +11,20 @@
 	} else {
 		audioEl?.pause?.()
 	}
+
+	$: name = (data.user?.name || `@${data.handle}`).replace(/\s+/g, ' ')
 </script>
 
 <main data-color={data.pageColor}>
 	<div class="container">
-		<h1>@{data.alias}</h1>
+		<h1>
+			{#each name.split(' ') as part, i}
+				{part}
+				{#if i < name.split(' ').length - 1}
+					<br />
+				{/if}
+			{/each}
+		</h1>
 
 		<a href="/" tabindex={1}>nombre.is</a>
 	</div>
