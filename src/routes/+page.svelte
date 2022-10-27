@@ -8,6 +8,7 @@
 	import NameForm from '../components/NameForm.svelte'
 	import LoadingScreen from '../components/LoadingScreen.svelte'
 	import RecordingScreen from '../components/RecordingScreen.svelte'
+	import RecordedScreen from '../components/RecordedScreen.svelte'
 
 	let user
 
@@ -84,6 +85,10 @@
 				}),
 			uploadFile: (context) =>
 				new Promise(async (resolve, reject) => {
+					if (!context.recordingBlob || !context.handle || !context.name) {
+						reject('invalid-data')
+					}
+
 					const file = new File(
 						[context.recordingBlob],
 						`${user.id}/pronounciation.mp3`,
@@ -166,10 +171,7 @@
 	{/if}
 
 	{#if $state.matches('recorded')}
-		{#if $state.context.recordingBlob}
-			<audio src={URL.createObjectURL($state.context.recordingBlob)} controls />
-		{/if}
-		<button on:click={() => send('UPLOAD_RECORDING')}>Upload</button>
+		<RecordedScreen {state} {send} />
 	{/if}
 
 	{#if $state.matches('uploading')}
@@ -203,6 +205,7 @@
 	17. ✅ Front-end route with alias displayed & audio player for pronunciation
 	18. ✅ Attach written name to pronunciation
 	19. Styling
+	20. Add buffer timer before start recording (countdown timer)
 
 	BONUS:
 	- Allow multiple aliases per user

@@ -15,7 +15,7 @@ export const recorderMachine =
 		},
 		preserveActionOrder: true,
 		predictableActionArguments: true,
-		initial: 'requestingMicAccess',
+		initial: 'nameForm',
 		states: {
 			nameForm: {
 				initial: 'idle',
@@ -102,7 +102,7 @@ export const recorderMachine =
 			recorded: {
 				on: {
 					RETAKE_RECORDING: {
-						target: 'recording',
+						target: 'requestingMicAccess',
 					},
 					UPLOAD_RECORDING: [
 						{
