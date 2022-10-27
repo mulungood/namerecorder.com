@@ -1,5 +1,6 @@
 <script>
 	import { supabase } from '../db'
+	import { page } from '$app/stores'
 
 	let email = ''
 	let password = ''
@@ -12,7 +13,11 @@
 		} =
 			type === 'LOGIN'
 				? await supabase.auth.signInWithPassword({ email, password })
-				: await supabase.auth.signUp({ email, password })
+				: await supabase.auth.signUp({
+						email,
+						password,
+						options: { emailRedirectTo: `${$page.url.origin}/record` },
+				  })
 
 		if (error) {
 			helperText = { error: true, text: error.message }

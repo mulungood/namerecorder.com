@@ -3,13 +3,13 @@
 	import { useMachine } from '@xstate/svelte'
 	import { onMount } from 'svelte'
 	import { assign } from 'xstate'
-	import LoadingScreen from '../components/LoadingScreen.svelte'
-	import NameForm from '../components/NameForm.svelte'
-	import RecordedScreen from '../components/RecordedScreen.svelte'
-	import RecordingScreen from '../components/RecordingScreen.svelte'
-	import { supabase } from '../db'
-	import Auth from './Auth.svelte'
-	import { recorderMachine } from './recorder.machine'
+	import LoadingScreen from '../../components/LoadingScreen.svelte'
+	import NameForm from '../../components/NameForm.svelte'
+	import RecordedScreen from '../../components/RecordedScreen.svelte'
+	import RecordingScreen from '../../components/RecordingScreen.svelte'
+	import { supabase } from '../../db'
+	import Auth from '../Auth.svelte'
+	import { recorderMachine } from '../recorder.machine'
 
 	let user
 
@@ -207,8 +207,9 @@
 	16. ✅ API endpoint for resolving pronunciation mp3 for given ID
 	17. ✅ Front-end route with alias displayed & audio player for pronunciation
 	18. ✅ Attach written name to pronunciation
-	19. Styling
-	20. Add buffer timer before start recording (countdown timer)
+	19. ✅ Styling
+	20. Homepage
+	21. Better login form
 
 	BONUS:
 	- Allow multiple aliases per user
@@ -217,4 +218,7 @@
 	- Read token for server db client that can read from `aliases` without opening it up to the public
 		- Then delete open policy in db
 		- Perhaps do a secret instead of a token?
+	- Add buffer timer before start recording (countdown timer)
+	- Better flow for updating recording - jump straight into rec
+	- Invite links ("Person X invited you to record your (...)")
  -->
