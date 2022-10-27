@@ -11,6 +11,12 @@
 
 	const { state, send } = useMachine(recorderMachine, {
 		actions: {
+			assignName: assign({
+				name: (_context, event) => event.data,
+			}),
+			assignHandle: assign({
+				handle: (_context, event) => event.data,
+			}),
 			assignMicRecorder: assign({
 				micRecorder: (_context, event) => event.data,
 			}),
@@ -27,6 +33,26 @@
 			startRecording: (context) => context.micRecorder?.start?.(),
 		},
 		services: {
+			verifyHandle: (context) =>
+				new Promise(async (resolve, reject) => {
+					console.log({ verify: context })
+					if (!context.handle) return reject('invalid-handle')
+
+					try {
+						const availability = await (
+							await fetch(`/handle-availability/@${context.handle}`)
+						).json()
+						console.log({ availability })
+						if (availability.available === true) {
+							resolve(true)
+						} else {
+							reject('unavailable')
+						}
+					} catch (error) {
+						console.log({ error })
+						reject(error)
+					}
+				}),
 			requestMicAccess: () =>
 				new Promise((resolve, reject) => {
 					navigator.mediaDevices
@@ -66,9 +92,10 @@
 					if (storageRes.error) {
 						return reject(storageRes.error)
 					}
-					const rowRes = await supabase.from('aliases').upsert({
-						alias: user.email,
+					const rowRes = await supabase.from('user_data').upsert({
 						user_id: user.id,
+						handle: context.handle,
+						name: context.name,
 					})
 					console.log({ rowRes })
 					if (rowRes.error) {
@@ -82,6 +109,13 @@
 		},
 		guards: {
 			isLoggedIn: () => !!user?.id,
+			hasValidNameAndHandle: (context, _event, { state }) => {
+				return (
+					!!context.name &&
+					context.name.length >= 2 &&
+					state.matches('nameForm.handleAvailable')
+				)
+			},
 		},
 	})
 
@@ -108,21 +142,58 @@
 {#if !user}
 	<Auth />
 {:else}
-	<h1>Record pronunciation</h1>
-
-	<h2>{$state.value}</h2>
-
-	{#if $state.matches('idle')}
-		<button on:click|preventDefault={() => send('REQUEST_ACCESS')} type="button"
-			><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<pre>{JSON.stringify(
+			{ value: $state.value, context: $state.context },
+			null,
+			2,
+		)}</pre>
+	{#if $state.matches('nameForm')}
+		<label>
+			First, tell us your name
+			<input
+				placeholder="Your name here"
+				value={$state.context.name}
+				on:input={(e) => send({ type: 'MODIFY_NAME', data: e.target.value })}
+			/>
+		</label>
+		<label>
+			https://nombre.is/@
+			<input
+				placeholder="your-name-here"
+				value={$state.context.handle}
+				on:input={(e) => send({ type: 'MODIFY_HANDLE', data: e.target.value })}
+			/>
+			{#if $state.matches('nameForm.verifyingHandle')}
+				<div aria-live="polite">Verifying availability...</div>
+			{/if}
+			{#if $state.matches('nameForm.handleUnavailable')}
+				<div aria-live="assertive">Handle already taken. Try another one</div>
+			{/if}
+			{#if $state.matches('nameForm.handleAvailable')}
+				<div aria-live="polite">Handle available 🎉</div>
+			{/if}
+		</label>
+		<button
+			on:click|preventDefault={() => send('REQUEST_ACCESS')}
+			type="button"
+			disabled={!$state.can('REQUEST_ACCESS')}
+		>
+			Record name <svg
+				viewBox="0 0 32 32"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+			>
 				<path
-					d="M16 4C14.6739 4 13.4021 4.52678 12.4645 5.46447C11.5268 6.40215 11 7.67392 11 9V16C11 17.3261 11.5268 18.5979 12.4645 19.5355C13.4021 20.4732 14.6739 21 16 21C17.3261 21 18.5979 20.4732 19.5355 19.5355C20.4732 18.5979 21 17.3261 21 16V9C21 7.67392 20.4732 6.40215 19.5355 5.46447C18.5979 4.52678 17.3261 4 16 4V4ZM8 15C8.26522 15 8.51957 15.1054 8.70711 15.2929C8.89464 15.4804 9 15.7348 9 16C9 17.8565 9.7375 19.637 11.0503 20.9497C12.363 22.2625 14.1435 23 16 23C17.8565 23 19.637 22.2625 20.9497 20.9497C22.2625 19.637 23 17.8565 23 16C23 15.7348 23.1054 15.4804 23.2929 15.2929C23.4804 15.1054 23.7348 15 24 15C24.2652 15 24.5196 15.1054 24.7071 15.2929C24.8946 15.4804 25 15.7348 25 16C25.0004 18.2141 24.1847 20.3507 22.7088 22.0011C21.2329 23.6515 19.2004 24.7 17 24.946V27C17 27.2652 16.8946 27.5196 16.7071 27.7071C16.5196 27.8946 16.2652 28 16 28C15.7348 28 15.4804 27.8946 15.2929 27.7071C15.1054 27.5196 15 27.2652 15 27V24.946C12.7996 24.7 10.7671 23.6515 9.29122 22.0011C7.81532 20.3507 6.99958 18.2141 7 16C7 15.7348 7.10536 15.4804 7.29289 15.2929C7.48043 15.1054 7.73478 15 8 15Z"
-					fill="currentColor"
+					d="M4 16C4 15.6022 4.15804 15.2206 4.43934 14.9393C4.72064 14.658 5.10218 14.5 5.5 14.5H23.074L16.5 8.61799C16.2061 8.35206 16.0295 7.98065 16.0086 7.58489C15.9877 7.18912 16.1243 6.80118 16.3885 6.50578C16.6527 6.21039 17.0231 6.03157 17.4187 6.00837C17.8143 5.98518 18.2031 6.1195 18.5 6.38199L28 14.882C28.1573 15.0227 28.2831 15.195 28.3693 15.3876C28.4554 15.5803 28.5 15.789 28.5 16C28.5 16.211 28.4554 16.4197 28.3693 16.6123C28.2831 16.805 28.1573 16.9773 28 17.118L18.5 25.618C18.3534 25.7507 18.182 25.853 17.9957 25.9192C17.8094 25.9854 17.6119 26.0141 17.4144 26.0037C17.217 25.9933 17.0235 25.9439 16.8452 25.8585C16.6669 25.773 16.5073 25.6532 16.3755 25.5058C16.2437 25.3585 16.1423 25.1865 16.0772 24.9998C16.0121 24.8131 15.9845 24.6154 15.9961 24.418C16.0076 24.2206 16.0581 24.0275 16.1446 23.8497C16.2311 23.6719 16.3519 23.5129 16.5 23.382L23.074 17.5H5.5C5.10218 17.5 4.72064 17.342 4.43934 17.0606C4.15804 16.7793 4 16.3978 4 16Z"
+					fill="#7F1D1D"
 				/>
 			</svg>
-			Record</button
-		>
-		<p>You’ll be prompted by your browser to give access to your microphone</p>
+		</button>
+	{/if}
+
+	{#if $state.matches('requestingMicAccess')}
+		<p>We need access to your microphone to record your pronunciation</p>
+		<p>SPINNER</p>
 	{/if}
 
 	{#if $state.matches('recording')}

@@ -3,17 +3,61 @@ import { createMachine } from 'xstate'
 export const MAX_DURATION = 10000
 
 export const recorderMachine =
-	/** @xstate-layout N4IgpgJg5mDOIC5QCcwGMD2yJmQOgEsIAbMAYgCUBRARQFUqBlAFQH0BBAYU6cYG0ADAF1EoAA4ZYBAC4EMAO1EgAHogBMAZgAsWvBo0CAbIYCcW-RoCsADgA0IAJ6JLatXhtrD1gOxrvVkyMAXyD7VExsXDxUAEcAVzhZeSgAWQI0djQ0OFgyCAUwQnkANwwAa0LYhNhpNIysnMERJBAJKVkFJVUETR09A2MzCxt7JwRrNxNvQxt9LQEtQx0QsPQsHHwqxIJkuszs2FzcZCw8MWIAQ2kAMywAW2iweMS9hsOmpTaZOUUW7rUTJZvHgBFMtNYNCYoZ4fKNnAJrHhvJYtJZLF5fIETABGFYgcLrKIE7A7KBkTjsAByPAAMqxqJwAPIUAAiAElKQBxD4tL4dX6gf4mQzuNTgxYaCE4yFwhCWIx4LR+BGA8ECFyAvHEjaPCIQUlkFiMgAK9KoTNZHO5wk+km+nT+6mFovFhklkOxMsciHm2Pc1hMEO82MC1gDuNC+LWkU20f1yUo5uZ7K5rE4AAk6JSANI88R2-ldeF4AMzczB7ETNEaWUaYN6bELGyB0E+NRauNEuMG5Q1K6FC7XaS4AAUjYEE4AlGRtV29aS860Cz8iz1nS5Xe7pSZa1oTHhDKC62ofAG1MFI7PY3rIInmOxs1QzRaU9bmvn2ivHeNrCKQ35vGsRYTH0bxvFlVxEWxENsSBPxIWsaCOxva9CQgMg6GNGlGXYFln2TK1Fz5L9BUQbETzcBCtE9KYJg0NRaxDJEQMMc9JT8GFkMJVDInQzDsNw-DLS5PhsXfJdPwdUiEHIiY9EDajIUAzQGO9BB5n3MDqIWbxFiA3ouJjPA4nODALnjMl8nkQodlKCpjNM8yADECFIIjlyklQyN0jQQXBaDUQEGEtHAtTtDcSwrEQyxAzrPdDJ1EziDMiyyGOU5ziuW5kAeJKUpctybV5DyBS8mSfL8xDsUC4LQrGE9gTDajGyWDRDHItRLASqI8vMqhkBOZA7woABNdzJNK7pKzUP1rHRYNf0sRsNErCCrDwQI2olFbWumbr8F6iB+sG8kqVpVh+JwllxvtSb1AEbwBAPSFPGDSVAi0CC5PVeZ9E6iYgOxQx9rOXApBqUkKG7BMrJskpykKMQwYIGoofnZIbsLb9fxFB60XBHxIXouwwoEP0Qs9NEoXVVxtBBpHkHBpIoDR9YDXS-BMpue5QcZlHpFZkkMaKj9btXHGQWRFEw38ECT1leYnuRGYBElIE0RsEJI3kDAcHgFor0IEgwFtCbV1cQ88E6pbzFewxg0+tSXF8hEYV8fwYovVYUMeZ4Id2dJ9hyU2xe-f7EXFE8XHVHxAIVuarcPJSJi8cEQJB7VSRDrHpJChXkXcQF7cQnQAesDPOwgbOSLK6DoJBJb7fojXkTqxAVs0li2ImXwvBBw6s+Ks3v2qoE8GmyC9xW7EIMBZizHa-RjGMEKQdh6vPKmkC-W0AMJzddEETbhBwvcbQ91boKXBmfv5AuYoLlci4ACNSDqDe7pPkNEVMTrWLDUw1hVaynlPuTqqJ0RtixBGb23EHLJT6gNLAH9VwhhWnoNO+8rCHlhGpCi7gUSq2bgDaiwNLydk5sjf2LNoZQBQd+JalgNpgjJjMbEC1j5tTcIeBEiEHq6SAd4Cu6MoDHWQUPUO0lGxQmevbHBK1vCAksArMmVt0SRVMDFJYLgurkJ9tZSAsAaQYCgGyUqxFN5kSTgedUo8jCghMJ1eOwIyZFwovRaq+16HSQALQzzUj4phUIoTN3BJoSUiitZBCAA */
+	/** @xstate-layout N4IgpgJg5mDOIC5QCcwGMD2yJmQOgDsBDAWzADEsS8BLCAGzAGIBZAeQBEBJcgTQH0AEgEEAchwAyAUQDaABgC6iUAAcMsGgBcaGAspAAPRAHYAnKbwBGAEwAOW6dsBmY3IBsl49YA0IAJ6IlgCsThZuQY5ynk5BQZYAvvG+qJjYuISkFFR4ABZEsKJgAO6CRAQMzOzcfEJikrKK+moa2rr6RgjmcnhuxpbObtYALJ5utj7+gSHWeMa2bkN2ptZBHglJIClYOPjEZJTI1HkFxaXljEwGsJpEmmB4RABmd8gAFJZyn3IAlExbabtMgcjvlCiUyhV5EokCBmlodHoYQEEJY3L1ZtZPsYRn0nPZjL4OpZgsYrE5LENTB4gnI+lTEsl0Nt0nssoc8AA3XA0R5+GgEKBnCpMCC6e78jkYADW9y5yB5fiFjChTXU8LaMI6Qzktjw42sxicvQWESGQSGvmRnnGPW11nCphsDk8DM2TIBGX22TlCv5gohF1wyCweBU9Fuj293N5SrAKphcNaiNAWp1eusBqNxhNpjNFsmKNsix6mL6licTiGc2MQVd-x2nrZ1B9vL9sdYnB4AhE4mk8dUaqT7UQ2t1+sNxrNufNlsCaMsVhpcgr40Wn1sdfdDdZwNyAbAwg5RBo4YARhcql3ar2GtCBy0EcOEGYLE6HM5XB4vLOUXMZgs5HtCInUdYxN1SbcgWyPJzjAABVYgjxPIhz0qTsah7ep+1hQdH01ExzCsOx3xcdxPAmK0i3-UsnE+UxAMNDcNnrFkoMOJgACUpAARTgqQAGUABV+GEABhUSBP47DEzwlNAmGboQmWeY3ArYYCQLTwhjcPBaJWIJXAiR1+nA5lAS9djLxqURhBYW9VQfDVQCtI1ukAxwbHJStc1MQlAicTE8GsCljKpVYKTcUyPR3KgO2qbs6j7RoE1wpzDH8wLgspYkwo8bSf3LGw8Hc2xPPLSlKSihtUAARwAVzgbQBRYGg0GENA0DgWARTFWgCElGU8FqhrrhatqOq66TUuTdLnwoxBbDkIIejkMKoiGIYYjcUwqvSYbGr9Mb2s62BuqDEMwwjbJ9tG1rjsm5L73VGaiXfPARkdVc3CW0I3AKiJSQC3pxgrbSRmsXb8HrP0mFEsQJIkfguNEtgOO4UQAHEpscl7EHtHSgnUgKK1MSt3B-bSZgCs1VrIj9nEhoatxhoS2AABSRqQUbRrhMex56nwNAmiesEmyb+gsYlJIZbC8RZNplvpVMZ6GBU4rnUfRjH+FEwQ4NEABpfmh3wlEogJlTRdCZTzAKrwMWxNFto+TaVeZtWrhuO4HmeXB3i+H4-i3Pb3agY3ZNmoW8EJqtidCcWf1o5aaV6IJFtcGsIlrZjg6h4OIHVwThANqROe5rXw7Sjp8ejkWxe1CXKKGYrUTiNP7G2-U3YgyAmDgtmJDYYQODLzXeaxx6cJxp9BgKz4F0NO1VKLcY5m75kC-7wfh9Hnm+csO8p4F03Cbn2xltceZy2sRxTGxJjGR7-A6rDDAiAgGHRQIcV+ule4X-oG-CA5ATxxknjJKuiBejdA2iMM0oRRY2EsD+HyswQjmkxKWGwEMc5PzwAAoBMNzr4EupoSM7ICHvxAcqcB00Z6uHehtCkSlEHBTPhfHUHgAq33vozShEApDIGDMgQuHFeCV1xggaBjC4EsPJGwzS89Zhk3tHiGWBoH5ujwfwwRwjYbwykIjLeQ8OASKfOYZaVZgZXw2vaWwc8zB6jmNMAyqIMzrEfmZUMuANDXD9BxUOPVv59QGvcFQPiaDXACRBP0ZjTYgyCjWcwNYzDOAzD+FYgMxheAYv0VYmiWIkIiX4gU0TthEKERdcMZDsjhOQL4zQZTsCxNodPeJotElGRSY4AK80EBbR6EpfJisojrA2AQDAOB4AwkKY2XcdBGAOWPnJZ8wRiohDNAZHJdg+nBG1IuDyURMmLWzp46KbEQQnHBLBJZJsVkfE+MVVSxJjCuAzBWJwBU0SkhybSHE5Z8SMxiuyFsfIBSxluRHDossCpried9ACMtz53yBRcvcsFDzHjPIslKbSVkeF1Jfc+L5tLn0boEOYTgrBL2AksF0uCvHApBLBBCRAkLYrAJCyBUjiR4FMOaPEqJsyDCCAVIsVKbC0lorTTMBTc5zKoFyyRoQCoVgXDqflWI74bUcG7eqB1mp3QmqdJVT5gg3z1EtflwxZYfApP9Q0eogYBWXNiKsOCznVVDqa02VYMmvJbvaWkrytpaXXmkCAPr7lLR0h+VEqJSqDGXP65azsoirBpPMeYfDX7vz9FG2aoRm4GVKuWQY2kSb5mRHfXUotHDZh1NmFcjMv6ctxcs2a59CU6uCs4RamJfIFlQTWDMmIxjhQWHwxCWKUKMDGgW6uFI3IRSlTWZc5KUQA3TMDK2YMbA5sAe-XRWAF0LVWFYeYZoVgeDRI6M+3QXDnwCq4wYwVGZ1Iaf4717a7mzVjlYGtqk04fSLInfo71HA3zBlOLM4aP4CmPcgU9ZtzSJPPutVEX5RWSwMouUIq07UhCLECsAkBYASAwFALgM0IHKrmHyisaImHpwWJ8xR8wgqcI8HIbS5ZsSQ2QwAWkHciZwaDaaVl+hWJaiREhAA */
 	createMachine({
-		context: { micRecorder: undefined, recordingBlob: undefined },
+		context: {
+			micRecorder: undefined,
+			recordingBlob: undefined,
+			name: '',
+			handle: '',
+		},
 		preserveActionOrder: true,
 		predictableActionArguments: true,
-		initial: 'idle',
+		initial: 'nameForm',
 		states: {
-			idle: {
+			nameForm: {
+				initial: 'idle',
+				states: {
+					idle: {},
+					hasNewHandle: {
+						after: {
+							500: {
+								target: '#recorder.nameForm.verifyingHandle',
+								actions: [],
+								internal: false,
+							},
+						},
+					},
+					verifyingHandle: {
+						invoke: {
+							src: 'verifyHandle',
+							id: 'verifyHandle',
+							onDone: [
+								{
+									target: 'handleAvailable',
+								},
+							],
+							onError: [
+								{
+									target: 'handleUnavailable',
+								},
+							],
+						},
+					},
+					handleAvailable: {},
+					handleUnavailable: {},
+				},
 				on: {
 					REQUEST_ACCESS: {
 						target: 'requestingMicAccess',
+						cond: 'hasValidNameAndHandle',
+					},
+					MODIFY_NAME: {
+						actions: 'assignName',
+					},
+					MODIFY_HANDLE: {
+						actions: 'assignHandle',
+						target: '#recorder.nameForm.hasNewHandle',
 					},
 				},
 			},
@@ -45,7 +89,7 @@ export const recorderMachine =
 				},
 				on: {
 					CANCEL_RECORDING: {
-						target: 'idle',
+						target: 'nameForm',
 						actions: 'cancelRecording',
 					},
 					STOP_RECORDING: {
@@ -98,7 +142,7 @@ export const recorderMachine =
 						target: 'uploading',
 					},
 					CANCEL_UPLOAD: {
-						target: 'idle',
+						target: 'nameForm',
 					},
 				},
 			},
