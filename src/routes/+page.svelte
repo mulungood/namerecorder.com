@@ -2,6 +2,10 @@
 	import { page } from '$app/stores'
 </script>
 
+<svelte:head>
+	<title>{$page.url.host} | Say names right</title>
+</svelte:head>
+
 <div class="container" data-color="orange">
 	<h1>Say names right</h1>
 

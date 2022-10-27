@@ -133,6 +133,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Record your name's pronunciation</title>
+</svelte:head>
+
 {#if $userStore.state === 'loading'}
 	<LoadingScreen />
 {:else if !user}
@@ -193,8 +197,9 @@
 	17. ✅ Front-end route with alias displayed & audio player for pronunciation
 	18. ✅ Attach written name to pronunciation
 	19. ✅ Styling
-	20. Homepage
-	21. Better login form
+	20. Better login form
+	21. Proper homepage
+	22. Favicon et. al
 
 	BONUS:
 	- Allow multiple aliases per user

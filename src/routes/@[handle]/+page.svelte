@@ -17,6 +17,10 @@
 	$: isSuccess = $page?.url?.searchParams?.get?.('success') === 'true'
 </script>
 
+<svelte:head>
+	<title>Learn how to pronounce {name}</title>
+</svelte:head>
+
 <main data-color={data.pageColor}>
 	<div class="container">
 		<h1>
