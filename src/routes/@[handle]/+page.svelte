@@ -26,15 +26,19 @@
 			{/each}
 		</h1>
 
-		<a href="/" tabindex={1}>nombre.is</a>
+		<a href="/" tabindex={1} class="text-md">nombre.is</a>
 	</div>
 
 	<audio
-		src={getObjectUrl(data.user_id)}
+		src={getObjectUrl(data.user?.user_id)}
 		bind:this={audioEl}
 		on:ended={() => (playing = false)}
 	/>
-	<button class="play-btn" on:click={() => (playing = !playing)} tabindex={0}>
+	<button
+		class="btn play-btn"
+		on:click={() => (playing = !playing)}
+		tabindex={0}
+	>
 		<span class="sr-only">Play audio</span>
 		{#if playing}
 			<svg
@@ -59,3 +63,12 @@
 		{/if}
 	</button>
 </main>
+
+<style>
+	.container {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+</style>

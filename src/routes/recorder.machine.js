@@ -10,6 +10,7 @@ export const recorderMachine =
 			recordingBlob: undefined,
 			name: '',
 			handle: '',
+			handleTouched: false,
 		},
 		preserveActionOrder: true,
 		predictableActionArguments: true,

@@ -226,6 +226,8 @@
 body {
 	margin: 0;
 	box-sizing: border-box;
+	color: var(--color-tailwind-slate-500);
+	overflow-x: hidden;
 }
 
 * {
@@ -233,6 +235,7 @@ body {
 	font-size: inherit;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
 		Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	color: inherit;
 }
 
 @media (min-width: 768px) {
@@ -241,16 +244,18 @@ body {
 	}
 }
 
+input {
+	color: var(--color-tailwind-slate-600);
+	display: block;
+	max-width: 100%;
+}
+
 .container {
 	/* Jsut for reference: I could clamp */
 	padding: clamp(50px, 7.5vw, 100px) clamp(30px, 7.5vw, 100px);
 	padding: calc(130 / 16 * 1rem) calc(80 / 16 * 1rem) calc(50 / 16 * 1rem);
 	min-height: 100vh;
 	min-height: 100dvh;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: flex-start;
 }
 
 h1 {
@@ -261,10 +266,10 @@ h1 {
 	position: relative;
 	z-index: 10;
 	user-select: none;
+	line-height: 0.85;
 }
 
 a {
-	font-size: calc(36 / 16 * 1rem);
 	color: var(--color-tailwind-gray-500);
 	font-weight: normal;
 	text-decoration: none;
@@ -274,32 +279,51 @@ a:focus-visible {
 	text-decoration: underline;
 }
 
-.play-btn {
+.btn {
+	color: var(--text-color);
 	background: var(--bg-color);
 	border: transparent;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	gap: 0.35em;
+	padding: 0.7em 0.75em;
+	border-radius: 0.35em;
+	transition: 0.175s cubic-bezier(0.14, -0.02, 0.44, 1);
+}
+
+.btn svg {
+	width: 0.85em;
+}
+
+.btn:hover {
+	background: var(--bg-hover-color);
+}
+
+.btn:disabled {
+	cursor: default;
+	--text-color: var(--color-tailwind-slate-900);
+	--bg-color: var(--color-tailwind-slate-200);
+	--bg-hover-color: var(--color-tailwind-slate-300);
+	--fg-color: var(--color-tailwind-slate-50);
+}
+
+.play-btn {
 	border-radius: 50%;
 	width: calc(1090 / 16 * 1rem);
 	height: calc(1090 / 16 * 1rem);
-	display: flex;
-	justify-content: center;
 	align-items: center;
 	position: fixed;
 	top: 50%;
 	right: 0;
 	transform: translateY(-50%) translateX(22%);
 	z-index: 0;
-	cursor: pointer;
-	transition: 0.175s cubic-bezier(0.14, -0.02, 0.44, 1);
 }
 
 .play-btn svg {
 	color: var(--fg-color);
 	width: 30.65%;
 	transition: inherit;
-}
-
-.play-btn:hover {
-	background: var(--bg-hover-color);
 }
 
 .play-btn:hover svg {
@@ -345,4 +369,12 @@ a:focus-visible {
 	clip: rect(0, 0, 0, 0);
 	white-space: nowrap;
 	border-width: 0;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.text-md {
+	font-size: calc(36 / 16 * 1rem);
 }
