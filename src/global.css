@@ -227,6 +227,8 @@ body {
 	box-sizing: border-box;
 	color: var(--color-tailwind-slate-500);
 	overflow-x: hidden;
+	--container-padding-x: calc(80 / 16 * 1rem);
+	--container-padding-bottom: calc(50 / 16 * 1rem);
 }
 
 * {
@@ -255,9 +257,8 @@ svg {
 }
 
 .container {
-	/* Jsut for reference: I could clamp */
-	padding: clamp(50px, 7.5vw, 100px) clamp(30px, 7.5vw, 100px);
-	padding: calc(130 / 16 * 1rem) calc(80 / 16 * 1rem) calc(50 / 16 * 1rem);
+	padding: calc(100 / 16 * 1rem) var(--container-padding-x)
+		var(--container-padding-bottom);
 	min-height: 100vh;
 	min-height: 100dvh;
 }

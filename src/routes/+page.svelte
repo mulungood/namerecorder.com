@@ -1,14 +1,15 @@
 <script>
+	import { goto } from '$app/navigation'
 	import { useMachine } from '@xstate/svelte'
 	import { onMount } from 'svelte'
 	import { assign } from 'xstate'
-	import { recorderMachine } from './recorder.machine'
+	import LoadingScreen from '../components/LoadingScreen.svelte'
+	import NameForm from '../components/NameForm.svelte'
+	import RecordedScreen from '../components/RecordedScreen.svelte'
+	import RecordingScreen from '../components/RecordingScreen.svelte'
 	import { supabase } from '../db'
 	import Auth from './Auth.svelte'
-	import NameForm from '../components/NameForm.svelte'
-	import LoadingScreen from '../components/LoadingScreen.svelte'
-	import RecordingScreen from '../components/RecordingScreen.svelte'
-	import RecordedScreen from '../components/RecordedScreen.svelte'
+	import { recorderMachine } from './recorder.machine'
 
 	let user
 
@@ -145,6 +146,10 @@
 	})
 
 	$: console.log({ ctx: $state.context, user })
+
+	$: if ($state.matches('done')) {
+		goto(`/@${$state.context.handle}?success=true`)
+	}
 </script>
 
 {#if !user}

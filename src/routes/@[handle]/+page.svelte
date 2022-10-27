@@ -1,4 +1,5 @@
 <script>
+	import { page } from '$app/stores'
 	import { getObjectUrl } from '../../getObjectUrl'
 
 	export let data
@@ -13,6 +14,7 @@
 	}
 
 	$: name = (data.user?.name || `@${data.handle}`).replace(/\s+/g, ' ')
+	$: isSuccess = $page?.url?.searchParams?.get?.('success') === 'true'
 </script>
 
 <main data-color={data.pageColor}>
@@ -25,8 +27,17 @@
 				{/if}
 			{/each}
 		</h1>
-
-		<a href="/" tabindex={1} class="text-md">nombre.is</a>
+		{#if isSuccess}
+			<div class="success">
+				<h2>🎉 Your recording is live!</h2>
+				<p>
+					Share this link with friends & colleagues:<br />
+					<a href="{$page.url.origin}/@{data.handle}"
+						>{$page.url.origin}/@{data.handle}</a
+					>
+				</p>
+			</div>
+		{/if}
 	</div>
 
 	<audio
@@ -65,13 +76,6 @@
 </main>
 
 <style>
-	.container {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		align-items: flex-start;
-	}
-
 	.btn--huge {
 		color: var(--fg-color);
 		font-size: 7rem;
@@ -97,8 +101,20 @@
 		line-height: 0.85;
 	}
 
-	a {
-		color: var(--color-tailwind-gray-500);
-		text-decoration: none;
+	.success {
+		background: var(--color-tailwind-blue-50);
+		border: 2px solid currentColor;
+		color: var(--color-tailwind-blue-900);
+		padding: 0.85em;
+		border-radius: 0.35em;
+		max-width: calc(600 / 16 * 1rem);
+		font-size: calc(28 / 16 * 1rem);
+		position: relative;
+		z-index: 10;
+		line-height: 1.35;
+		margin-top: 1em;
+	}
+	.success h2 {
+		margin-bottom: 0.5em;
 	}
 </style>
