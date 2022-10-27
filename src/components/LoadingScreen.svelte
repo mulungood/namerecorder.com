@@ -2,7 +2,7 @@
 	export let title
 </script>
 
-<div aria-live="polite">
+<div aria-live="polite" class="header text-md">
 	<svg
 		viewBox="0 0 134 134"
 		fill="currentColor"
@@ -14,7 +14,7 @@
 	</svg>
 
 	{#if title}
-		<p class="text-center text-md">
+		<p>
 			{title}
 		</p>
 	{/if}
@@ -22,10 +22,8 @@
 
 <style>
 	div {
-		width: 100%;
-		height: 100%;
-		margin: calc(40 / 16 * 1rem) auto;
-		max-width: calc(640 / 16 * 1rem);
+		min-height: 100vh;
+		min-height: 100dvh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

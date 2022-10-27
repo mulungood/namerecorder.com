@@ -35,7 +35,7 @@
 		on:ended={() => (playing = false)}
 	/>
 	<button
-		class="btn play-btn"
+		class="btn play-btn btn--huge"
 		on:click={() => (playing = !playing)}
 		tabindex={0}
 	>
@@ -70,5 +70,35 @@
 		flex-direction: column;
 		justify-content: space-between;
 		align-items: flex-start;
+	}
+
+	.btn--huge {
+		color: var(--fg-color);
+		font-size: 7rem;
+		position: fixed;
+		top: 50%;
+		right: 0;
+		transform: translateY(-50%) translateX(22%);
+		z-index: 0;
+	}
+
+	.btn--huge:hover svg {
+		transform: scale(1.015);
+		color: white;
+	}
+
+	h1 {
+		font-size: calc(128 / 16 * 1rem);
+		color: var(--text-color);
+		word-wrap: anywhere;
+		position: relative;
+		z-index: 10;
+		user-select: none;
+		line-height: 0.85;
+	}
+
+	a {
+		color: var(--color-tailwind-gray-500);
+		text-decoration: none;
 	}
 </style>

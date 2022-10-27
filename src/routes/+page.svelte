@@ -3,11 +3,11 @@
 	import { onMount } from 'svelte'
 	import { assign } from 'xstate'
 	import { recorderMachine } from './recorder.machine'
-	import Timer from './Timer.svelte'
 	import { supabase } from '../db'
 	import Auth from './Auth.svelte'
 	import NameForm from '../components/NameForm.svelte'
 	import LoadingScreen from '../components/LoadingScreen.svelte'
+	import RecordingScreen from '../components/RecordingScreen.svelte'
 
 	let user
 
@@ -145,11 +145,11 @@
 {#if !user}
 	<Auth />
 {:else}
-	<pre>{JSON.stringify(
+	<!-- <pre>{JSON.stringify(
 			{ value: $state.value, context: $state.context },
 			null,
 			2,
-		)}</pre>
+		)}</pre> -->
 
 	{#if $state.matches('nameForm')}
 		<NameForm {state} {send} />
@@ -162,31 +162,9 @@
 	{/if}
 
 	{#if $state.matches('recording')}
-		<Timer />
-		<button
-			on:click|preventDefault={() => send('STOP_RECORDING')}
-			type="button"
-		>
-			<svg viewBox="0 0 16 16">
-				<path
-					fill="currentColor"
-					d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm5-3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H6Z"
-				/>
-			</svg>
-			<span class="sr-only">Stop</span>
-		</button>
-		<button
-			on:click|preventDefault={() => send('CANCEL_RECORDING')}
-			type="button"
-			><svg viewBox="0 0 16 16"
-				><path
-					fill="currentColor"
-					d="M7 3h2a1 1 0 0 0-2 0ZM6 3a2 2 0 1 1 4 0h4a.5.5 0 0 1 0 1h-.564l-1.205 8.838A2.5 2.5 0 0 1 9.754 15H6.246a2.5 2.5 0 0 1-2.477-2.162L2.564 4H2a.5.5 0 0 1 0-1h4Zm1 3.5a.5.5 0 0 0-1 0v5a.5.5 0 0 0 1 0v-5ZM9.5 6a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0v-5a.5.5 0 0 1 .5-.5Zm-4.74 6.703A1.5 1.5 0 0 0 6.246 14h3.508a1.5 1.5 0 0 0 1.487-1.297L12.427 4H3.573l1.187 8.703Z"
-				/></svg
-			>
-			<span class="sr-only">Cancel</span>
-		</button>
+		<RecordingScreen {state} {send} />
 	{/if}
+
 	{#if $state.matches('recorded')}
 		{#if $state.context.recordingBlob}
 			<audio src={URL.createObjectURL($state.context.recordingBlob)} controls />
