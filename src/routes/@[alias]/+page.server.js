@@ -1,4 +1,5 @@
 import { error as errorResponse } from '@sveltejs/kit'
+import { getRandomArrItem } from '../../arrays'
 import { getUserIdFromAlias } from '../../getUserIdFromAlias'
 
 export async function load({ params }) {
@@ -12,5 +13,9 @@ export async function load({ params }) {
 		throw errorResponse(404, { message: 'user-not-found' })
 	}
 
-	return { user_id, alias }
+	return {
+		user_id,
+		alias,
+		pageColor: getRandomArrItem(['emerald', 'red', 'violet', 'orange']),
+	}
 }
