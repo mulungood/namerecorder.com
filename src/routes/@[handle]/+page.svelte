@@ -50,7 +50,6 @@
 		src={getObjectUrl(data.user?.user_id)}
 		bind:this={audioEl}
 		on:ended={() => (playing = false)}
-		controls
 	/>
 	<button
 		class="btn play-btn btn--huge"
@@ -75,7 +74,7 @@
 		right: 0;
 		transform: translateY(-50%) translateX(22%);
 		z-index: 0;
-		mix-blend-mode: color;
+		mix-blend-mode: darken;
 	}
 
 	.btn--huge:hover :global(svg) {
