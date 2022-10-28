@@ -23,6 +23,10 @@
 	}
 </script>
 
+<svelte:head>
+	<link rel="icon" href="/favicons/{$page.data.pageColor || 'emerald'}.png" />
+</svelte:head>
+
 <slot />
 
 <a class="site-url text-sm" href="/" tabindex={1}>{$page.url.host}</a>

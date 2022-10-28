@@ -6,7 +6,7 @@
 	<title>{$page.url.host} | Say names right</title>
 </svelte:head>
 
-<div class="container" data-color="orange">
+<div class="container" data-color={$page.data.pageColor || 'emerald'}>
 	<h1 class="text-lg">Say names right</h1>
 
 	<p class="text-md">
