@@ -86,6 +86,38 @@
 		color: white;
 	}
 
+	@keyframes pulseBg {
+		100% {
+			transform: scale(var(--final-scale));
+		}
+	}
+
+	.btn--huge::before,
+	.btn--huge::after {
+		content: '';
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		z-index: -1;
+		left: 0;
+		top: 0;
+		transform-origin: center;
+		background: radial-gradient(transparent, var(--ring-color));
+		border-radius: 50%;
+		animation: pulseBg infinite alternate 3s ease;
+	}
+
+	.btn--huge::before {
+		--final-scale: 1.07;
+		--ring-color: var(--fg-color);
+	}
+
+	.btn--huge::after {
+		--final-scale: 1.03;
+		--ring-color: var(--bg-color);
+	}
+
 	h1 {
 		font-size: calc(128 / 16 * 1rem);
 		color: var(--text-color);
