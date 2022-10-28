@@ -22,8 +22,6 @@
 	$: if ($page.data?.session?.user && browser) {
 		localStorage.setItem('has-logged-before', 'true')
 	}
-
-	$: console.log($page)
 </script>
 
 <svelte:head>
@@ -43,7 +41,7 @@
 {/if}
 
 {#if $page.routeId === '/@[handle]'}
-	<a href="/record" class="btn text-sm record-cta" data-color="emerald">
+	<a href="/record" class="btn text-sm record-cta" data-color="neutral">
 		{#if $page.data?.session && $page.data?.session?.user?.id === $page.data?.user?.user_id}
 			Edit recording
 		{:else}
