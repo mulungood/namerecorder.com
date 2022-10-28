@@ -21,6 +21,7 @@
 
 <svelte:head>
 	<title>Learn how to pronounce {name}</title>
+	<link rel="preload" href={getObjectUrl(data.user?.user_id)} />
 </svelte:head>
 
 <main data-color={data.pageColor}>
