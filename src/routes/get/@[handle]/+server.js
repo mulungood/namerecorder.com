@@ -9,8 +9,6 @@ export async function GET({ params }) {
 	}
 	const { error, user } = await getUserIdFromHandle(handle)
 
-	console.info({ error, handle, user })
-
 	if (error || !user?.user_id) {
 		return new Response(null, { status: 404 })
 	}

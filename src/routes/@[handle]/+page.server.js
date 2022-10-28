@@ -1,5 +1,4 @@
 import { error as errorResponse } from '@sveltejs/kit'
-import { getRandomArrItem } from '../../arrays'
 import { getUserIdFromHandle } from '../../getUserFromHandle'
 
 export async function load({ params }) {
@@ -16,6 +15,5 @@ export async function load({ params }) {
 	return {
 		user,
 		handle,
-		pageColor: getRandomArrItem(['emerald', 'red', 'violet', 'orange']),
 	}
 }

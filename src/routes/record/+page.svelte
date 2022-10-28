@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
 	import { useMachine } from '@xstate/svelte'
 	import { assign } from 'xstate'
 	import ErrorScreen from '../../components/ErrorScreen.svelte'
@@ -9,11 +10,13 @@
 	import RecordedScreen from '../../components/RecordedScreen.svelte'
 	import RecordingScreen from '../../components/RecordingScreen.svelte'
 	import { supabase } from '../../db'
-	import { userStore } from '../../userStore'
-	import Auth from '../Auth.svelte'
 	import { recorderMachine } from '../recorder.machine'
 
-	$: user = $userStore.user
+	$: user = $page.data?.session?.user
+
+	$: if (!user) {
+		goto('/login')
+	}
 
 	const { state, send } = useMachine(recorderMachine, {
 		actions: {
@@ -132,7 +135,7 @@
 		},
 	})
 
-	$: console.log({ ctx: $state.context, user, value: $state.value })
+	// $: console.log({ ctx: $state.context, user, value: $state.value })
 
 	$: if ($state.matches('done')) {
 		goto(`/@${$state.context.handle}?success=true`)
@@ -143,93 +146,87 @@
 	<title>Record your name's pronunciation</title>
 </svelte:head>
 
-{#if $userStore.state === 'loading'}
-	<LoadingScreen />
-{:else if !user}
-	<Auth />
-{:else}
-	<!-- <pre>{JSON.stringify(
+<!-- <pre>{JSON.stringify(
 			{ value: $state.value, context: $state.context },
 			null,
 			2,
 		)}</pre> -->
 
-	{#if $state.matches('nameForm')}
-		<NameForm {state} {send} />
-	{/if}
+{#if $state.matches('nameForm')}
+	<NameForm {state} {send} />
+{/if}
 
-	{#if $state.matches('requestingMicAccess')}
-		<LoadingScreen
-			title="We need access to your microphone to record your pronunciation"
-		/>
-	{/if}
+{#if $state.matches('requestingMicAccess')}
+	<LoadingScreen
+		title="We need access to your microphone to record your pronunciation"
+	/>
+{/if}
 
-	{#if $state.matches('recording')}
-		<RecordingScreen {state} {send} />
-	{/if}
+{#if $state.matches('recording')}
+	<RecordingScreen {state} {send} />
+{/if}
 
-	{#if $state.matches('recorded')}
-		<RecordedScreen {state} {send} />
-	{/if}
+{#if $state.matches('recorded')}
+	<RecordedScreen {state} {send} />
+{/if}
 
-	{#if $state.matches('uploading')}
-		<LoadingScreen title="Uploading recording..." />
-	{/if}
+{#if $state.matches('uploading')}
+	<LoadingScreen title="Uploading recording..." />
+{/if}
 
-	{#if $state.matches('uploadError')}
-		<ErrorScreen title="There was an issue uploading your recording">
-			<div class="actions-footer">
-				<button
-					class="btn"
-					data-color="neutral"
-					on:click={() => send('CANCEL_UPLOAD')}
-				>
-					<RetakeIcon /> Retake
-				</button>
-				<button class="btn" data-color="emerald" on:click={() => send('RETRY')}>
-					Retry upload
-				</button>
-			</div>
-		</ErrorScreen>
-	{/if}
+{#if $state.matches('uploadError')}
+	<ErrorScreen title="There was an issue uploading your recording">
+		<div class="actions-footer">
+			<button
+				class="btn"
+				data-color="neutral"
+				on:click={() => send('CANCEL_UPLOAD')}
+			>
+				<RetakeIcon /> Retake
+			</button>
+			<button class="btn" data-color="emerald" on:click={() => send('RETRY')}>
+				Retry upload
+			</button>
+		</div>
+	</ErrorScreen>
+{/if}
 
-	{#if $state.matches('unavailableMic')}
-		<ErrorScreen
-			title="We need access to your microphone"
-			subtitle="Open this page in a new tab and try again."
-		>
-			<div class="actions-footer">
-				<button
-					class="btn"
-					data-color="emerald"
-					on:click={() => window.open(window.location.href, '_blank')}
-				>
-					<RetakeIcon /> Reload page
-				</button>
-			</div>
-		</ErrorScreen>
-	{/if}
+{#if $state.matches('unavailableMic')}
+	<ErrorScreen
+		title="We need access to your microphone"
+		subtitle="Open this page in a new tab and try again."
+	>
+		<div class="actions-footer">
+			<button
+				class="btn"
+				data-color="emerald"
+				on:click={() => window.open(window.location.href, '_blank')}
+			>
+				<RetakeIcon /> Reload page
+			</button>
+		</div>
+	</ErrorScreen>
+{/if}
 
-	{#if $state.matches('recordingError')}
-		<ErrorScreen
-			title="Something went wrong"
-			subtitle="We couldn't process your recording, please try again"
-		>
-			<div class="actions-footer">
-				<button
-					class="btn"
-					data-color="emerald"
-					on:click={() => send('RETAKE_RECORDING')}
-				>
-					<RetakeIcon /> Retake
-				</button>
-			</div>
-		</ErrorScreen>
-	{/if}
+{#if $state.matches('recordingError')}
+	<ErrorScreen
+		title="Something went wrong"
+		subtitle="We couldn't process your recording, please try again"
+	>
+		<div class="actions-footer">
+			<button
+				class="btn"
+				data-color="emerald"
+				on:click={() => send('RETAKE_RECORDING')}
+			>
+				<RetakeIcon /> Retake
+			</button>
+		</div>
+	</ErrorScreen>
+{/if}
 
-	{#if $state.matches('needsLogin')}
-		<ErrorScreen title="You must be logged in to submit a recording" />
-	{/if}
+{#if $state.matches('needsLogin')}
+	<ErrorScreen title="You must be logged in to submit a recording" />
 {/if}
 
 <!-- Goal: record audio file based on microphone and have it ready for uploading -->
@@ -258,7 +255,7 @@
 	17. ✅ Front-end route with alias displayed & audio player for pronunciation
 	18. ✅ Attach written name to pronunciation
 	19. ✅ Styling
-	20. Better login form
+	20. ✅ Better login form
 	21. Proper homepage
 	22. Favicon et. al
 

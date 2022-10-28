@@ -66,6 +66,9 @@
 </main>
 
 <style>
+	.container {
+		padding-top: calc(120 / 16 * 1rem);
+	}
 	.btn--huge {
 		color: var(--fg-color);
 		font-size: 7rem;

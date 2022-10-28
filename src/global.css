@@ -229,11 +229,13 @@ body {
 	overflow-x: hidden;
 	--container-padding-x: calc(80 / 16 * 1rem);
 	--container-padding-bottom: calc(50 / 16 * 1rem);
+	line-height: 1.35;
 }
 
 * {
 	box-sizing: inherit;
 	font-size: inherit;
+	line-height: inherit;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
 		Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	color: inherit;
@@ -249,7 +251,7 @@ body {
 input {
 	color: var(--color-tailwind-slate-600);
 	display: block;
-	max-width: 100%;
+	width: 100%;
 }
 
 svg {
@@ -257,7 +259,7 @@ svg {
 }
 
 .container {
-	padding: calc(100 / 16 * 1rem) var(--container-padding-x)
+	padding: calc(40 / 16 * 1rem) var(--container-padding-x)
 		var(--container-padding-bottom);
 	min-height: 100vh;
 	min-height: 100dvh;
@@ -315,6 +317,19 @@ a:focus-visible {
 	--bg-color: var(--color-tailwind-slate-200);
 	--bg-hover-color: var(--color-tailwind-slate-300);
 	--fg-color: var(--color-tailwind-slate-50);
+}
+
+.btn--underline {
+	background: transparent;
+	padding: 0;
+	text-decoration: underline;
+	text-decoration-color: var(--bg-hover-color);
+}
+
+.btn--underline:hover {
+	background: transparent;
+	text-decoration-color: var(--bg-color);
+	filter: brightness(0.7);
 }
 
 body,
@@ -375,6 +390,11 @@ body,
 
 .text-sm {
 	font-size: calc(28 / 16 * 1rem);
+}
+
+.text-lg {
+	font-size: calc(64 / 16 * 1rem);
+	color: var(--color-tailwind-slate-700);
 }
 
 .actions-footer {

@@ -1,31 +1,39 @@
 <script>
+	import { browser } from '$app/environment'
+	import { invalidate } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
-	import { userStore } from '../userStore'
 	import { supabase } from '../db'
 	import '../global.css'
 
 	onMount(() => {
-		supabase.auth.getSession().then(({ data: { session } }) => {
-			userStore.set({ user: session?.user ?? null, state: 'idle' })
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange(() => {
+			invalidate('supabase:auth')
 		})
 
-		const { subscription: authListener } = supabase.auth.onAuthStateChange(
-			(_event, session) => {
-				const currentUser = session?.user
-				userStore.set({ user: currentUser ?? null, state: 'idle' })
-			},
-		)
-
 		return () => {
-			authListener?.unsubscribe()
+			subscription.unsubscribe()
 		}
 	})
+
+	$: if ($page.data?.session?.user && browser) {
+		localStorage.setItem('has-logged-before', 'true')
+	}
 </script>
 
 <slot />
 
 <a class="site-url text-sm" href="/" tabindex={1}>{$page.url.host}</a>
+
+{#if $page.data?.session?.user}
+	<form method="POST" action="/login?/signout">
+		<button type="submit" class="btn btn--underline text-sm" data-color="red"
+			>Sign-out</button
+		>
+	</form>
+{/if}
 
 <style>
 	.site-url {
@@ -35,5 +43,11 @@
 		left: var(--container-padding-x);
 		bottom: var(--container-padding-bottom);
 		z-index: 8;
+	}
+
+	form {
+		position: fixed;
+		right: var(--container-padding-x);
+		bottom: var(--container-padding-bottom);
 	}
 </style>

@@ -7,7 +7,7 @@
 </svelte:head>
 
 <div class="container" data-color="orange">
-	<h1>Say names right</h1>
+	<h1 class="text-lg">Say names right</h1>
 
 	<p class="text-md">
 		Send {$page.url.host} to friends & colleagues to practice pronouncing their names
@@ -24,10 +24,6 @@
 		gap: 1rem;
 		align-items: flex-start;
 		max-width: calc(940 / 16 * 1rem);
-	}
-	h1 {
-		font-size: calc(64 / 16 * 1rem);
-		color: var(--color-tailwind-slate-700);
 	}
 	p {
 		color: var(--color-tailwind-slate-600);
