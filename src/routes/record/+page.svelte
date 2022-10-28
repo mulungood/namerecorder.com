@@ -3,6 +3,7 @@
 	import { useMachine } from '@xstate/svelte'
 	import { assign } from 'xstate'
 	import ErrorScreen from '../../components/ErrorScreen.svelte'
+	import RetakeIcon from '../../components/icons/RetakeIcon.svelte'
 	import LoadingScreen from '../../components/LoadingScreen.svelte'
 	import NameForm from '../../components/NameForm.svelte'
 	import RecordedScreen from '../../components/RecordedScreen.svelte'
@@ -179,7 +180,7 @@
 					data-color="neutral"
 					on:click={() => send('CANCEL_UPLOAD')}
 				>
-					Retake
+					<RetakeIcon /> Retake
 				</button>
 				<button class="btn" data-color="emerald" on:click={() => send('RETRY')}>
 					Retry upload
@@ -199,7 +200,7 @@
 					data-color="emerald"
 					on:click={() => window.open(window.location.href, '_blank')}
 				>
-					Reload page
+					<RetakeIcon /> Reload page
 				</button>
 			</div>
 		</ErrorScreen>
@@ -216,7 +217,7 @@
 					data-color="emerald"
 					on:click={() => send('RETAKE_RECORDING')}
 				>
-					Retake
+					<RetakeIcon /> Retake
 				</button>
 			</div>
 		</ErrorScreen>
