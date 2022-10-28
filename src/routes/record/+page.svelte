@@ -94,11 +94,15 @@
 
 					const file = new File(
 						[context.recordingBlob],
-						`${user.id}/pronounciation.mp3`,
+						`${user.id}/name.mp3`,
+						{ type: 'audio/mpeg' },
 					)
 					const storageRes = await supabase.storage
 						.from('pronunciations')
-						.upload(file.name, file, { upsert: true })
+						.upload(file.name, file, {
+							upsert: true,
+							contentType: 'audio/mpeg',
+						})
 					if (storageRes.error) {
 						return reject(storageRes.error)
 					}
