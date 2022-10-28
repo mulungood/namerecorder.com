@@ -55,11 +55,11 @@ export const actions = {
 		const { error } = await supabaseClient.auth.signUp({
 			email,
 			password,
-			options: { emailRedirectTo: request.url },
+			options: { emailRedirectTo: new URL(request.url).origin + '/record' },
 		})
 
 		if (error) {
-			if (error.status === 400) {
+			if (error.status === 400 || error.status === 422) {
 				return invalid(400, {
 					error: 'Invalid email or password.',
 					action: 'signup',
@@ -77,7 +77,7 @@ export const actions = {
 			})
 		}
 
-		throw redirect(303, '/record')
+		throw redirect(303, '/confirm-signup')
 	},
 
 	signout: async (event) => {
