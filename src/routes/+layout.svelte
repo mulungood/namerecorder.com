@@ -25,7 +25,7 @@
 
 <slot />
 
-<a class="site-url text-md" href="/" tabindex={1}>{$page.url.host}</a>
+<a class="site-url text-sm" href="/" tabindex={1}>{$page.url.host}</a>
 
 <style>
 	.site-url {

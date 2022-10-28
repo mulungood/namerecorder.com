@@ -14,7 +14,7 @@
 
 <div class="container" data-color="emerald">
 	<div class="header text-md">
-		<h1 class="">Check your recording</h1>
+		<h1>Check your recording</h1>
 		<p class="text-md">All good? Go ahead and send it :D</p>
 	</div>
 
@@ -110,11 +110,5 @@
 	.play-btn {
 		font-size: 2rem;
 		position: relative;
-	}
-
-	.actions-footer {
-		display: flex;
-		align-items: center;
-		gap: 1em;
 	}
 </style>

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation'
 	import { useMachine } from '@xstate/svelte'
 	import { assign } from 'xstate'
+	import ErrorScreen from '../../components/ErrorScreen.svelte'
 	import LoadingScreen from '../../components/LoadingScreen.svelte'
 	import NameForm from '../../components/NameForm.svelte'
 	import RecordedScreen from '../../components/RecordedScreen.svelte'
@@ -126,7 +127,7 @@
 		},
 	})
 
-	$: console.log({ ctx: $state.context, user })
+	$: console.log({ ctx: $state.context, user, value: $state.value })
 
 	$: if ($state.matches('done')) {
 		goto(`/@${$state.context.handle}?success=true`)
@@ -168,6 +169,61 @@
 
 	{#if $state.matches('uploading')}
 		<LoadingScreen title="Uploading recording..." />
+	{/if}
+
+	{#if $state.matches('uploadError')}
+		<ErrorScreen title="There was an issue uploading your recording">
+			<div class="actions-footer">
+				<button
+					class="btn"
+					data-color="neutral"
+					on:click={() => send('CANCEL_UPLOAD')}
+				>
+					Retake
+				</button>
+				<button class="btn" data-color="emerald" on:click={() => send('RETRY')}>
+					Retry upload
+				</button>
+			</div>
+		</ErrorScreen>
+	{/if}
+
+	{#if $state.matches('unavailableMic')}
+		<ErrorScreen
+			title="We need access to your microphone"
+			subtitle="Open this page in a new tab and try again."
+		>
+			<div class="actions-footer">
+				<button
+					class="btn"
+					data-color="emerald"
+					on:click={() => window.open(window.location.href, '_blank')}
+				>
+					Reload page
+				</button>
+			</div>
+		</ErrorScreen>
+	{/if}
+
+	{#if $state.matches('recordingError')}
+		<ErrorScreen
+			title="Something went wrong"
+			subtitle="We couldn't process your recording, please try again"
+		>
+			<div class="actions-footer">
+				<button
+					class="btn"
+					data-color="emerald"
+					on:click={() => send('RETAKE_RECORDING')}
+				>
+					Retake
+				</button>
+			</div>
+		</ErrorScreen>
+	{/if}
+
+	{#if $state.matches('needsLogin')}
+		<ErrorScreen title="You must be logged in to submit a recording" />
 	{/if}
 {/if}
 

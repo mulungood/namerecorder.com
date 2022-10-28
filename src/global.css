@@ -266,7 +266,7 @@ svg {
 .header {
 	padding: calc(40 / 16 * 1rem);
 	margin: 0 auto;
-	max-width: calc(640 / 16 * 1rem);
+	max-width: calc(720 / 16 * 1rem);
 	text-align: center;
 }
 
@@ -371,4 +371,14 @@ body,
 
 .text-md {
 	font-size: calc(36 / 16 * 1rem);
+}
+
+.text-sm {
+	font-size: calc(28 / 16 * 1rem);
+}
+
+.actions-footer {
+	display: flex;
+	align-items: center;
+	gap: 1em;
 }
