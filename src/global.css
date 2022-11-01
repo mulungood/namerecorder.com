@@ -227,8 +227,8 @@ body {
 	box-sizing: border-box;
 	color: var(--color-tailwind-slate-500);
 	overflow-x: hidden;
-	--container-padding-x: calc(80 / 16 * 1rem);
-	--container-padding-bottom: calc(50 / 16 * 1rem);
+	--container-padding-x: calc(32 / 16 * 1rem);
+	--container-padding-bottom: calc(32 / 16 * 1rem);
 	line-height: 1.35;
 }
 
@@ -263,6 +263,13 @@ svg {
 		var(--container-padding-bottom);
 	min-height: 100vh;
 	min-height: 100dvh;
+}
+
+@media (min-width: 768px) {
+	body {
+		--container-padding-x: calc(80 / 16 * 1rem);
+		--container-padding-bottom: calc(50 / 16 * 1rem);
+	}
 }
 
 .header {
@@ -390,6 +397,10 @@ body,
 
 .text-sm {
 	font-size: calc(28 / 16 * 1rem);
+}
+
+.text-xs {
+	font-size: calc(22 / 16 * 1rem);
 }
 
 .text-lg {

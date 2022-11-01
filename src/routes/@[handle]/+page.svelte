@@ -17,6 +17,9 @@
 
 	$: name = (data.user?.name || `@${data.handle}`).replace(/\s+/g, ' ')
 	$: isSuccess = $page?.url?.searchParams?.get?.('success') === 'true'
+	$: largestNameLength = name
+		.split(' ')
+		.sort((a, b) => b.length - a.length)[0].length
 </script>
 
 <svelte:head>
@@ -26,7 +29,7 @@
 
 <main data-color={data.pageColor}>
 	<div class="container">
-		<h1>
+		<h1 data-small={largestNameLength > 12}>
 			{#each name.split(' ') as part, i}
 				{part}
 				{#if i < name.split(' ').length - 1}
@@ -67,18 +70,15 @@
 </main>
 
 <style>
-	.container {
-		padding-top: calc(120 / 16 * 1rem);
-	}
 	.btn--huge {
 		color: var(--fg-color);
-		font-size: 7rem;
 		position: fixed;
-		top: 50%;
-		right: 0;
-		transform: translateY(-50%) translateX(22%);
 		z-index: 0;
 		mix-blend-mode: darken;
+		bottom: 0;
+		right: 50%;
+		transform: translateY(20%) translateX(50%);
+		font-size: 10vh;
 	}
 
 	.btn--huge:hover :global(svg) {
@@ -119,14 +119,19 @@
 	}
 
 	h1 {
-		font-size: calc(128 / 16 * 1rem);
+		font-size: calc(48 / 16 * 1rem);
 		color: var(--text-color);
-		word-wrap: anywhere;
 		position: relative;
 		z-index: 0;
 		user-select: none;
 		line-height: 0.85;
 		display: inline-block;
+		word-wrap: anywhere;
+		hyphens: auto;
+	}
+
+	h1[data-small='true'] {
+		font-size: calc(42 / 16 * 1rem);
 	}
 
 	.success {
@@ -144,5 +149,36 @@
 	}
 	.success h2 {
 		margin-bottom: 0.5em;
+	}
+
+	@media (min-width: 768px) {
+		h1[data-small='false'] {
+			font-size: calc(100 / 16 * 1rem);
+		}
+		h1[data-small='true'] {
+			font-size: calc(84 / 16 * 1rem);
+		}
+	}
+
+	@media (min-width: 940px), (min-width: 768px) and (min-aspect-ratio: 1) {
+		.container {
+			padding-top: calc(120 / 16 * 1rem);
+		}
+		.btn--huge {
+			font-size: 7rem;
+			top: 50%;
+			right: 0;
+			bottom: auto;
+			transform: translateY(-50%) translateX(22%);
+		}
+	}
+
+	@media (min-width: 940px) {
+		h1[data-small='false'] {
+			font-size: calc(128 / 16 * 1rem);
+		}
+		h1[data-small='true'] {
+			font-size: calc(96 / 16 * 1rem);
+		}
 	}
 </style>

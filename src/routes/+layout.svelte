@@ -30,18 +30,18 @@
 
 <slot />
 
-<a class="site-url text-sm" href="/" tabindex={1}>{$page.url.host}</a>
+<a class="site-url text-xs" href="/" tabindex={1}>{$page.url.host}</a>
 
 {#if $page.data?.session?.user && $page.routeId !== '/@[handle]'}
 	<form method="POST" action="/login?/signout">
-		<button type="submit" class="btn btn--underline text-sm" data-color="red"
+		<button type="submit" class="btn btn--underline text-xs" data-color="red"
 			>Sign-out</button
 		>
 	</form>
 {/if}
 
 {#if $page.routeId === '/@[handle]'}
-	<a href="/record" class="btn text-sm record-cta" data-color="neutral">
+	<a href="/record" class="btn text-xs record-cta" data-color="neutral">
 		{#if $page.data?.session && $page.data?.session?.user?.id === $page.data?.user?.user_id}
 			Edit recording
 		{:else}
@@ -54,16 +54,27 @@
 	.site-url {
 		color: var(--color-tailwind-gray-500);
 		text-decoration: none;
-		position: fixed;
 		left: var(--container-padding-x);
-		bottom: var(--container-padding-bottom);
+	}
+
+	.site-url,
+	form,
+	.record-cta {
+		position: fixed;
 		z-index: 8;
+		bottom: var(--container-padding-bottom);
+		transform: translateY(50%);
 	}
 
 	form,
 	.record-cta {
-		position: fixed;
 		right: var(--container-padding-x);
-		bottom: var(--container-padding-bottom);
+	}
+
+	@media (max-width: 767px) {
+		.site-url,
+		.record-cta {
+			font-size: 1rem;
+		}
 	}
 </style>
