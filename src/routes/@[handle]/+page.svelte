@@ -17,13 +17,27 @@
 	}
 
 	$: name = (data.user?.name || `@${data.handle}`).replace(/\s+/g, ' ')
-	$: isSuccess = $page?.url?.searchParams?.get?.('success') === 'true'
+
+	$: nameParts = name.split(' ').reduce((parts, curPart, idx, allParts) => {
+		// keep hyphens together with previous word
+		if (allParts[idx + 1]?.trim() === '-') {
+			return [...parts, curPart + ' -']
+		}
+
+		if (curPart?.trim() === '-') return parts
+
+		return [...parts, curPart]
+	}, [])
+
 	$: largestNameLength = name
 		.split(' ')
 		.sort((a, b) => b.length - a.length)[0].length
 
 	let seekable
 	$: loading = !Array.isArray(seekable) || seekable.length < 1
+
+	// Right after recording a name, users will be redirected here
+	$: isSuccess = $page?.url?.searchParams?.get?.('success') === 'true'
 </script>
 
 <svelte:head>
@@ -33,9 +47,9 @@
 <main data-color={data.pageColor}>
 	<div class="container">
 		<h1 data-small={largestNameLength > 12}>
-			{#each name.split(' ') as part, i}
+			{#each nameParts as part, i}
 				{part}
-				{#if i < name.split(' ').length - 1}
+				{#if i < nameParts.length - 1}
 					<br />
 				{/if}
 			{/each}
