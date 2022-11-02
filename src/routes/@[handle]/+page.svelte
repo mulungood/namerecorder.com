@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores'
+	import LoadingSpinner from '../../components/icons/LoadingSpinner.svelte'
 	import PauseIcon from '../../components/icons/PauseIcon.svelte'
 	import PlayIcon from '../../components/icons/PlayIcon.svelte'
 	import { getObjectUrl } from '../../getObjectUrl'
@@ -20,11 +21,13 @@
 	$: largestNameLength = name
 		.split(' ')
 		.sort((a, b) => b.length - a.length)[0].length
+
+	let seekable
+	$: loading = !Array.isArray(seekable) || seekable.length < 1
 </script>
 
 <svelte:head>
 	<title>Learn how to pronounce {name}</title>
-	<link rel="preload" href={getObjectUrl(data.user?.user_id)} />
 </svelte:head>
 
 <main data-color={data.pageColor}>
@@ -53,15 +56,21 @@
 	<audio
 		src={getObjectUrl(data.user?.user_id)}
 		bind:this={audioEl}
-		on:ended={() => (playing = false)}
+		bind:seekable
+		type="audio/mpeg"
+		preload
 	/>
+
 	<button
 		class="btn play-btn btn--huge"
 		on:click={() => (playing = !playing)}
 		tabindex={0}
+		disabled={loading}
 	>
 		<span class="sr-only">Play audio</span>
-		{#if playing}
+		{#if loading}
+			<LoadingSpinner />
+		{:else if playing}
 			<PauseIcon />
 		{:else}
 			<PlayIcon />
@@ -81,7 +90,7 @@
 		font-size: 10vh;
 	}
 
-	.btn--huge:hover :global(svg) {
+	.btn--huge:hover:not(:disabled) :global(svg) {
 		transform: scale(1.015);
 		color: white;
 	}
@@ -92,8 +101,8 @@
 		}
 	}
 
-	.btn--huge::before,
-	.btn--huge::after {
+	.btn--huge:not(:disabled)::before,
+	.btn--huge:not(:disabled)::after {
 		content: '';
 		display: block;
 		width: 100%;

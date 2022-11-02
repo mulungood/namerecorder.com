@@ -302,7 +302,7 @@ a:focus-visible {
 	width: 0.85em;
 }
 
-.btn:hover {
+.btn:not(:disabled):hover {
 	background: var(--bg-hover-color);
 }
 
