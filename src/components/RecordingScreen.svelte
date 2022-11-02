@@ -1,10 +1,27 @@
 <script>
-	import { MAX_DURATION } from '../routes/recorder.machine'
+	import { onMount } from 'svelte'
+	import { COUNTDOWN_DURATION, MAX_DURATION } from '../routes/recorder.machine'
 	import CancelIcon from './icons/CancelIcon.svelte'
 	import PauseIcon from './icons/PauseIcon.svelte'
 
 	export let state
 	export let send
+
+	const COUNTDOWN_STEP = 1000
+
+	$: recording = $state.matches('recording.recording')
+	let countdownTime = COUNTDOWN_DURATION
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			if (countdownTime > 0) {
+				countdownTime -= COUNTDOWN_STEP
+			}
+		}, COUNTDOWN_STEP)
+		return () => {
+			clearInterval(interval)
+		}
+	})
 </script>
 
 <div class="container" data-color="red">
@@ -16,24 +33,34 @@
 		on:click|preventDefault={() => send('STOP_RECORDING')}
 		type="button"
 		class="btn play-btn"
+		disabled={!recording}
 	>
-		<span class="sr-only">Stop recording</span>
-		<PauseIcon />
+		{#if recording}
+			<span class="sr-only">Stop recording</span>
+			<PauseIcon />
+		{:else}
+			<div class="countdown" aria-live="polite">
+				<span class="sr-only">Time to start recording:</span>
+				{countdownTime / 1000}
+			</div>
+		{/if}
 		<div class="timer">
-			<svg
-				viewBox="0 0 396 396"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-				style="--duration: {MAX_DURATION}ms"
-			>
-				<circle
-					cx="198"
-					cy="198"
-					r="197.5"
-					stroke="currentColor"
-					stroke-width="1em"
-				/>
-			</svg>
+			{#key recording}
+				<svg
+					viewBox="0 0 396 396"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					style="--duration: {recording ? MAX_DURATION : COUNTDOWN_DURATION}ms"
+				>
+					<circle
+						cx="198"
+						cy="198"
+						r="197.5"
+						stroke="currentColor"
+						stroke-width="0.55em"
+					/>
+				</svg>
+			{/key}
 		</div>
 	</button>
 	<button
@@ -88,5 +115,12 @@
 		transform: scale(1.025) rotate(-90deg);
 		color: var(--color-tailwind-blue-200);
 		z-index: -1;
+	}
+
+	.countdown {
+		font-size: 3em;
+		font-weight: bold;
+		color: var(--text-color);
+		opacity: 0.8;
 	}
 </style>

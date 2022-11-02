@@ -265,6 +265,11 @@ svg {
 	min-height: 100dvh;
 }
 
+.container .header {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
 @media (min-width: 768px) {
 	body {
 		--container-padding-x: calc(80 / 16 * 1rem);
