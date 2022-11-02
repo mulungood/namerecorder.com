@@ -81,7 +81,7 @@
 					}
 					context.micRecorder.ondataavailable = (e) => {
 						const blob = new Blob([e.data], {
-							type: 'audio/mp3',
+							type: 'audio/mpeg',
 						})
 						context.micRecorder.ondatavailable = undefined
 
