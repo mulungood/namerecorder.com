@@ -69,6 +69,7 @@
 
 	<audio
 		src={getObjectUrl(data.user?.user_id)}
+		on:ended={() => (playing = false)}
 		bind:this={audioEl}
 		bind:seekable
 		type="audio/mpeg"
