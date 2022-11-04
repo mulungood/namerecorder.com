@@ -12,6 +12,7 @@
 	import { supabase } from '../../db'
 	import { recorderMachine } from '../recorder.machine'
 
+	export let data
 	$: user = $page.data?.session?.user
 
 	$: if (!user) {
@@ -19,6 +20,11 @@
 	}
 
 	const { state, send } = useMachine(recorderMachine, {
+		context: {
+			handle: data?.userRowData?.handle,
+			handleTouched: !!data?.userRowData?.handle,
+			name: data?.userRowData?.name,
+		},
 		actions: {
 			assignName: assign({
 				name: (_context, event) => event.data,
@@ -46,6 +52,11 @@
 			verifyHandle: (context) =>
 				new Promise(async (resolve, reject) => {
 					if (!context.handle) return reject('invalid-handle')
+
+					// If the same handle as that loaded by the server through the user's session, it's available
+					if (data?.userRowData?.handle === context.handle) {
+						resolve(true)
+					}
 
 					try {
 						const availability = await (
@@ -134,6 +145,15 @@
 			},
 		},
 	})
+
+	// If we get user row data from the server, let's tell the machine to validate the handle
+	if (data?.userRowData?.handle) {
+		send({
+			type: 'MODIFY_HANDLE',
+			data: data.userRowData.handle,
+			touched: true,
+		})
+	}
 
 	// $: console.log({ ctx: $state.context, user, value: $state.value })
 
@@ -257,7 +277,7 @@
 	19. ✅ Styling
 	20. ✅ Better login form
 	21. Proper homepage
-	22. Favicon et. al
+	22. ✅ Favicon
 
 	BONUS:
 	- Allow multiple aliases per user
@@ -266,7 +286,8 @@
 	- Read token for server db client that can read from `aliases` without opening it up to the public
 		- Then delete open policy in db
 		- Perhaps do a secret instead of a token?
-	- Add buffer timer before start recording (countdown timer)
-	- Better flow for updating recording - jump straight into rec
+	- ✅ Add buffer timer before start recording (countdown timer)
+	- ✅ Better flow for updating recording - jump straight into rec
 	- Invite links ("Person X invited you to record your (...)")
+	- Better auth flow
  -->

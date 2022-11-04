@@ -5,9 +5,10 @@ export async function getUserIdFromHandle(alias) {
 		.from('user_data')
 		.select()
 		.eq('handle', alias.replace('@', ''))
+		.single()
 
 	return {
-		user: data?.[0],
+		user: data,
 		error,
 	}
 }

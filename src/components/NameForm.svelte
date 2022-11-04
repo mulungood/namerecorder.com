@@ -1,4 +1,5 @@
 <script>
+	import { page } from '$app/stores'
 	import { slugify } from '../strings'
 	import RightArrowIcon from './icons/RightArrowIcon.svelte'
 
@@ -23,7 +24,7 @@
 
 	<div class="handle">
 		<label class="handle-input text-md">
-			https://nombre.is/@
+			{$page.url.host}/@
 			<input
 				placeholder="your-name-here"
 				value={$state.context.handle}
