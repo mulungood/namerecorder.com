@@ -26,8 +26,16 @@
 
 <div class="container" data-color="red">
 	<div class="header text-md">
-		<h1 class="">Now, record “{$state.context.name}”</h1>
-		<p class="text-md">Up to {MAX_DURATION / 1000}s</p>
+		<h1 class="">
+			{recording ? `Now, record “${$state.context.name}”` : 'Get ready...'}
+		</h1>
+		<p class="text-md">
+			{recording
+				? `Up to ${MAX_DURATION / 1000}s`
+				: `You'll record "${$state.context.name}" in up to ${
+						MAX_DURATION / 1000
+				  }s`}
+		</p>
 	</div>
 	<button
 		on:click|preventDefault={() => send('STOP_RECORDING')}
