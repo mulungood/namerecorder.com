@@ -1,4 +1,4 @@
-import { invalid, redirect } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import { getSupabase } from '@supabase/auth-helpers-sveltekit'
 
 export async function load(event) {
@@ -24,7 +24,7 @@ export const actions = {
 
 		if (error) {
 			if (error.status === 400) {
-				return invalid(400, {
+				return fail(400, {
 					error: 'Invalid email & password combination',
 					action: 'login',
 					values: {
@@ -32,7 +32,7 @@ export const actions = {
 					},
 				})
 			}
-			return invalid(500, {
+			return fail(500, {
 				error: 'Server error. Please try again.',
 				action: 'login',
 				values: {
@@ -60,7 +60,7 @@ export const actions = {
 
 		if (error) {
 			if (error.status === 400 || error.status === 422) {
-				return invalid(400, {
+				return fail(400, {
 					error: 'Invalid email or password.',
 					action: 'signup',
 					values: {
@@ -68,7 +68,7 @@ export const actions = {
 					},
 				})
 			}
-			return invalid(500, {
+			return fail(500, {
 				error: 'Server error. Try again later.',
 				action: 'signup',
 				values: {
